@@ -1,0 +1,29 @@
+version: '3'
+services:
+    db:
+        image: postgres
+        networks:
+            - production-network
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_PASSWORD: "postgres"
+
+    spring:
+        build:
+            dockerfile: Dockerfile
+            context: .
+        image: diogoa/spring-app
+        container_name: spring-app-car
+        ports:
+            - "8080:8080"    
+        networks:
+            - production-network
+        environment:
+            SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
+        depends_on:
+            - db
+    
+networks:
+    production-network:
+        driver: bridge
